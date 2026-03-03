@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 /* ================= TYPES ================= */
 
@@ -11,6 +12,8 @@ type Product = {
   name: string;
   brand: string;
   price: number;
+  originalPrice?: number;
+
   category: string;
 
   heroImage: string;
@@ -32,48 +35,6 @@ type Product = {
   quantity: number;
 };
 
-type Review = {
-  name: string;
-  rating: number;
-  comment: string;
-};
-
-/* ================= FAKE REVIEWS ================= */
-
-const NAMES = [
-  "Amit Sharma",
-  "Rahul Verma",
-  "Sneha Patel",
-  "Priya Singh",
-  "Karan Mehta",
-  "Ankit Yadav",
-  "Neha Gupta",
-];
-
-const COMMENTS = [
-  "Really good quality, results visible in 2 weeks.",
-  "Taste is decent and mixes well.",
-  "Worth the price, will buy again.",
-  "Helped in muscle recovery a lot.",
-  "Packaging was good and delivery was fast.",
-  "Not the best taste, but results are solid.",
-];
-
-function generateReviews(seed: string): Review[] {
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  const count = (hash % 3) + 3; // 3–5 reviews
-
-  return Array.from({ length: count }).map((_, i) => ({
-    name: NAMES[(hash + i) % NAMES.length],
-    rating: ((hash + i) % 2) + 4, // 4–5 stars
-    comment: COMMENTS[(hash + i * 2) % COMMENTS.length],
-  }));
-}
-
 /* ================= PAGE ================= */
 
 export default function ProductPage() {
@@ -81,9 +42,7 @@ export default function ProductPage() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [activeImage, setActiveImage] = useState<string>("");
-  const [reviews, setReviews] = useState<Review[]>([]);
-
-  /* ================= FETCH PRODUCT ================= */
+  const [recommended, setRecommended] = useState<Product[]>([]);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -97,7 +56,19 @@ export default function ProductPage() {
       const data: Product = await res.json();
       setProduct(data);
       setActiveImage(data.heroImage);
-      setReviews(generateReviews(data._id));
+
+      const allRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/products`,
+        { cache: "no-store" }
+      );
+
+      const allProducts: Product[] = await allRes.json();
+
+      const filtered = allProducts
+        .filter((p) => p._id !== data._id)
+        .slice(0, 3);
+
+      setRecommended(filtered);
     }
 
     fetchProduct();
@@ -105,20 +76,19 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-black text-gray-400 flex items-center justify-center">
+      <div className="min-h-screen bg-white text-gray-500 flex items-center justify-center">
         Loading product…
       </div>
     );
   }
 
   return (
-    <main className="bg-black text-gray-200 py-20">
+    <main className="bg-white text-gray-900 py-20">
       <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-16">
 
         {/* ================= IMAGES ================= */}
         <div>
-          {/* HERO IMAGE WITH ZOOM */}
-          <div className="mb-6 flex justify-center border border-slate-800 rounded-xl p-6 overflow-hidden">
+          <div className="mb-6 flex justify-center border border-gray-200 rounded-xl p-6 overflow-hidden">
             <Image
               src={activeImage}
               alt={product.name}
@@ -129,7 +99,6 @@ export default function ProductPage() {
             />
           </div>
 
-          {/* GALLERY */}
           <div className="flex gap-4 justify-center flex-wrap">
             {[product.heroImage, ...product.images]
               .filter((img, i, arr) => arr.indexOf(img) === i)
@@ -140,7 +109,7 @@ export default function ProductPage() {
                   className={`border rounded-lg p-2 ${
                     activeImage === img
                       ? "border-[#F2C200]"
-                      : "border-slate-700 hover:border-[#F2C200]/60"
+                      : "border-gray-300 hover:border-[#F2C200]/60"
                   }`}
                 >
                   <img src={img} className="w-24 h-24 object-contain" />
@@ -151,86 +120,77 @@ export default function ProductPage() {
 
         {/* ================= INFO ================= */}
         <div>
-          <p className="text-sm text-gray-400">{product.brand}</p>
+          <p className="text-sm text-gray-500">{product.brand}</p>
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
 
-          <p className="text-gray-500 mb-4">
+          <p className="text-gray-600 mb-4">
             Category: {product.category}
           </p>
 
-          <p className="text-2xl font-bold text-[#F2C200] mb-4">
-            ₹{product.price.toLocaleString("en-IN")}
-          </p>
+          <div className="flex items-center gap-3 mb-4">
+            {product.originalPrice && (
+              <p className="text-xl text-red-500 line-through">
+                ₹{product.originalPrice.toLocaleString("en-IN")}
+              </p>
+            )}
+            <p className="text-2xl font-bold text-[#F2C200]">
+              ₹{product.price.toLocaleString("en-IN")}
+            </p>
+          </div>
 
-          {/* PRODUCT META */}
           <div className="grid grid-cols-2 gap-4 text-sm mb-6">
             {product.flavours && (
-              <p><span className="text-gray-400">Flavours:</span> {product.flavours.join(", ")}</p>
+              <p><span className="text-gray-500">Flavours:</span> {product.flavours.join(", ")}</p>
             )}
             {product.weight && (
-              <p><span className="text-gray-400">Weight:</span> {product.weight}</p>
+              <p><span className="text-gray-500">Weight:</span> {product.weight}</p>
             )}
             {product.dietType && (
-              <p><span className="text-gray-400">Diet:</span> {product.dietType}</p>
+              <p><span className="text-gray-500">Diet:</span> {product.dietType}</p>
             )}
             {product.netQuantity && (
-              <p><span className="text-gray-400">Net Qty:</span> {product.netQuantity}</p>
+              <p><span className="text-gray-500">Net Qty:</span> {product.netQuantity}</p>
             )}
           </div>
 
-          <p className={`mb-4 ${product.inStock ? "text-green-400" : "text-red-400"}`}>
+          <p className={`mb-4 ${product.inStock ? "text-green-600" : "text-red-600"}`}>
             {product.inStock
               ? `In Stock (${product.quantity})`
               : "Out of Stock"}
           </p>
 
-          <p className="text-sm text-gray-400 mb-6">
+          <p className="text-sm text-gray-600 mb-6">
             {product.description}
           </p>
 
-          {/* BENEFITS */}
           <ul className="mb-6 space-y-1 text-sm">
             {product.benefits.map((b) => (
               <li key={b}>• {b}</li>
             ))}
           </ul>
-        {/* ================= BUY LINKS ================= */}
-        <div className="flex flex-col gap-4">
+
+          {/* ================= BUY LINKS ================= */}
+          <div className="flex flex-col gap-4">
             {product.amazonLink && (
-              <a
-                href={product.amazonLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-8 py-4 font-bold rounded-md bg-[#F2C200] text-black text-center hover:bg-[#d9ae00] transition"
-              >
+              <a href={product.amazonLink} target="_blank" className="px-8 py-4 font-bold rounded-md bg-[#F2C200] text-black text-center">
                 Buy on Amazon
               </a>
             )}
 
             {product.flipkartLink && (
-              <a
-                href={product.flipkartLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-8 py-4 font-bold rounded-md bg-[#F2C200] text-black text-center hover:bg-[#d9ae00] transition"
-              >
+              <a href={product.flipkartLink} target="_blank" className="px-8 py-4 font-bold rounded-md bg-[#F2C200] text-black text-center">
                 Buy on Flipkart
               </a>
             )}
 
             {product.externalLink && (
-              <a
-                href={product.externalLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-8 py-4 font-bold rounded-md border border-[#F2C200] text-[#F2C200] text-center hover:bg-[#F2C200] hover:text-black transition"
-              >
+              <a href={product.externalLink} target="_blank" className="px-8 py-4 font-bold rounded-md border border-[#F2C200] text-[#F2C200] text-center">
                 Visit Official Website
               </a>
             )}
 
             {!product.inStock && (
-              <div className="px-8 py-4 text-center font-bold rounded-md bg-gray-700 text-gray-300 cursor-not-allowed">
+              <div className="px-8 py-4 text-center font-bold rounded-md bg-gray-200 text-gray-600">
                 Out of Stock
               </div>
             )}
@@ -238,24 +198,63 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* ================= REVIEWS ================= */}
-      <div className="max-w-4xl mx-auto px-4 mt-20">
-        <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
+      {/* ================= RECOMMENDED ================= */}
+      <div className="max-w-6xl mx-auto px-4 mt-24">
+        <h2 className="text-2xl font-bold mb-10">You may also like</h2>
 
-        <div className="space-y-6">
-          {reviews.map((r, i) => (
-            <div key={i} className="border border-slate-800 rounded-xl p-4">
-              <p className="font-semibold">{r.name}</p>
-              <p className="text-[#F2C200] text-sm">
-                {"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}
-              </p>
-              <p className="text-sm text-gray-400 mt-1">{r.comment}</p>
-            </div>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-12">
+          {recommended.map((item) => (
+            <Link
+              key={item._id}
+              href={`/shop/${item._id}`}
+              className="
+                block
+                bg-white
+                border border-gray-200
+                rounded-2xl
+                p-6
+                hover:border-[#F2C200]/60
+                transition
+                group
+              "
+            >
+              <div className="h-40 flex items-center justify-center mb-6">
+                <img
+                  src={item.heroImage}
+                  alt={item.name}
+                  className="
+                    h-full object-contain
+                    drop-shadow-[0_30px_45px_rgba(0,0,0,0.2)]
+                    group-hover:scale-105 transition
+                  "
+                />
+              </div>
+
+              <div className="text-center">
+                <p className="text-xs text-gray-500 mb-1">
+                  {item.brand}
+                </p>
+
+                <h3 className="text-sm font-semibold mb-2">
+                  {item.name}
+                </h3>
+
+                <div className="flex items-center justify-center gap-2">
+                  {item.originalPrice && (
+                    <p className="text-xs text-red-500 line-through">
+                      ₹{item.originalPrice.toLocaleString("en-IN")}
+                    </p>
+                  )}
+
+                  <p className="text-sm font-bold text-[#F2C200]">
+                    ₹{item.price.toLocaleString("en-IN")}
+                  </p>
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
       </div>
     </main>
   );
 }
-
-/* ================= BUTTON STYLES ================= */

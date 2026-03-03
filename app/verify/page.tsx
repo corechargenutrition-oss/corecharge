@@ -33,12 +33,12 @@ export default function VerifyPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-gray-200 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-white text-gray-900 flex items-center justify-center px-4">
       <div
         className="
           w-full max-w-md
-          bg-gradient-to-br from-[#141414] to-[#0b0b0b]
-          border border-slate-800
+          bg-white
+          border border-gray-200
           rounded-2xl
           p-10
           text-center
@@ -49,7 +49,7 @@ export default function VerifyPage() {
           Verify Product Authenticity
         </h1>
 
-        <p className="text-sm text-gray-400 mb-8">
+        <p className="text-sm text-gray-600 mb-8">
           Scratch the code on your product and enter it below to verify
           authenticity.
         </p>
@@ -71,8 +71,8 @@ export default function VerifyPage() {
             text-lg
             p-4
             mb-6
-            bg-black
-            border border-slate-700
+            bg-white
+            border border-gray-300
             rounded-md
             focus:outline-none
             focus:border-[#F2C200]
@@ -98,20 +98,20 @@ export default function VerifyPage() {
 
         {/* RESULT */}
         {status === "success" && (
-          <div className="mt-8 text-green-400">
+          <div className="mt-8 text-green-600">
             <div className="text-5xl mb-3">✔️</div>
             <p className="font-bold">Product Verified</p>
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-gray-600 mt-1">
               This product is 100% authentic.
             </p>
           </div>
         )}
 
         {status === "error" && (
-          <div className="mt-8 text-red-400">
+          <div className="mt-8 text-red-600">
             <div className="text-5xl mb-3">✖️</div>
             <p className="font-bold">Invalid Code</p>
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-gray-600 mt-1">
               Please check the code and try again.
             </p>
           </div>

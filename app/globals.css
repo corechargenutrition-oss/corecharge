@@ -5,8 +5,8 @@
 ================================ */
 
 :root {
-  --background: #000000;   /* Pure black */
-  --foreground: #e5e7eb;   /* Gray-200 */
+  --background: #ffffff;
+  --foreground: #111827;
 
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -15,7 +15,6 @@
     'Liberation Mono', 'Courier New', monospace;
 }
 
-/* Tailwind v4 theme binding */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -48,7 +47,6 @@ a {
   text-decoration: none;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
@@ -57,21 +55,31 @@ html {
    DARK SCROLLBAR (PREMIUM)
 ================================ */
 
-::-webkit-scrollbar {
-  width: 8px;
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0b0b0b; }
+::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+
+/* ===============================
+   LIGHT THEME — CSS FILTER TRICK
+================================ */
+
+/* The toggle button itself must be excluded from the filter
+   so it doesn't get double-inverted */
+
+   body.dark-theme {
+    filter: invert(1) hue-rotate(180deg);
+  }
+body.light-theme {
+  filter: invert(1) hue-rotate(180deg);
 }
 
-::-webkit-scrollbar-track {
-  background: #0b0b0b;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #374151; /* slate-700 */
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #4b5563; /* slate-600 */
+/* Re-invert images & videos so they look normal */
+body.light-theme img,
+body.light-theme video,
+body.light-theme iframe,
+body.light-theme [style*="background-image"] {
+  filter: invert(1) hue-rotate(180deg);
 }
 
 /* ===============================
@@ -90,14 +98,8 @@ html {
 ================================ */
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fadeIn {

@@ -5,19 +5,11 @@ const ProductSchema = new Schema(
     name: { type: String, required: true },
     brand: { type: String },
     price: { type: Number, required: true },
+    originalPrice: { type: Number }, // ← NEW: the higher "crossed out" price
     category: { type: String },
 
-    // ✅ MAIN IMAGE (used everywhere)
-    heroImage: {
-      type: String,
-      required: true,
-    },
-
-    // ✅ OPTIONAL GALLERY
-    images: {
-      type: [String],
-      default: [],
-    },
+    heroImage: { type: String, required: true },
+    images: { type: [String], default: [] },
 
     flavours: { type: [String], default: [] },
     benefits: { type: [String], default: [] },

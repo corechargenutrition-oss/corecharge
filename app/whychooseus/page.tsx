@@ -2,24 +2,24 @@ import Link from "next/link";
 
 export default function WhyChooseUs() {
   return (
-    <main className="bg-black text-gray-200">
+    <main className="bg-white text-gray-900">
 
       {/* ================= HERO ================= */}
-      <section className="relative border-b border-slate-800">
+      <section className="relative border-b border-gray-200">
         <div className="absolute inset-0">
           <img
-            src="/physique2.png" // ← add a serious gym / athlete image
+            src="/physique2.png"
             alt="Why choose CoreCharge Nutrition"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/70" />
+          <div className="absolute inset-0 bg-white/70" />
         </div>
 
         <div className="relative max-w-6xl mx-auto px-4 py-28 text-center">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-5">
             Why Choose <span className="text-[#F2C200]">CoreCharge</span>
           </h1>
-          <p className="text-gray-300 text-sm md:text-base max-w-3xl mx-auto">
+          <p className="text-gray-600 text-sm md:text-base max-w-3xl mx-auto">
             In a market filled with exaggerated claims and counterfeit products,
             CoreCharge Nutrition is built on verification, transparency, and performance.
           </p>
@@ -46,8 +46,8 @@ export default function WhyChooseUs() {
             <div
               key={item.title}
               className="
-                bg-gradient-to-br from-[#141414] to-[#0b0b0b]
-                border border-slate-700
+                bg-white
+                border border-gray-200
                 rounded-xl
                 p-8
                 hover:border-[#F2C200]/50
@@ -58,7 +58,7 @@ export default function WhyChooseUs() {
               <h3 className="text-lg font-bold mb-3">
                 {item.title}
               </h3>
-              <p className="text-sm text-gray-400 leading-relaxed">
+              <p className="text-sm text-gray-600 leading-relaxed">
                 {item.desc}
               </p>
             </div>
@@ -67,7 +67,7 @@ export default function WhyChooseUs() {
       </section>
 
       {/* ================= COMPARISON ================= */}
-      <section className="py-24 bg-[#0b0b0b] border-t border-slate-800">
+      <section className="py-24 bg-gray-100 border-t border-gray-200">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-2xl font-bold mb-12">
             CoreCharge vs Unverified Sellers
@@ -78,16 +78,16 @@ export default function WhyChooseUs() {
             {/* CoreCharge */}
             <div
               className="
-                bg-gradient-to-br from-[#141414] to-[#0b0b0b]
-                border border-slate-700
+                bg-white
+                border border-gray-200
                 rounded-xl
                 p-8
               "
             >
-              <h3 className="text-lg font-bold mb-5 text-gray-100">
+              <h3 className="text-lg font-bold mb-5 text-gray-900">
                 CoreCharge Nutrition
               </h3>
-              <ul className="space-y-3 text-sm text-gray-300">
+              <ul className="space-y-3 text-sm text-gray-700">
                 <li>• Authorized distributor sourcing</li>
                 <li>• Verifiable batch numbers</li>
                 <li>• Transparent ingredient labels</li>
@@ -99,17 +99,17 @@ export default function WhyChooseUs() {
             {/* Others */}
             <div
               className="
-                bg-gradient-to-br from-[#141414] to-[#0b0b0b]
-                border border-slate-700
+                bg-white
+                border border-gray-200
                 rounded-xl
                 p-8
                 opacity-80
               "
             >
-              <h3 className="text-lg font-bold mb-5 text-gray-200">
+              <h3 className="text-lg font-bold mb-5 text-gray-700">
                 Unverified Sellers
               </h3>
-              <ul className="space-y-3 text-sm text-gray-400">
+              <ul className="space-y-3 text-sm text-gray-600">
                 <li>• Unknown sourcing</li>
                 <li>• No batch verification</li>
                 <li>• Misleading claims</li>
@@ -151,8 +151,8 @@ export default function WhyChooseUs() {
               <div
                 key={item.title}
                 className="
-                  bg-gradient-to-br from-[#141414] to-[#0b0b0b]
-                  border border-slate-700
+                  bg-white
+                  border border-gray-200
                   rounded-xl
                   p-6
                 "
@@ -160,7 +160,7 @@ export default function WhyChooseUs() {
                 <h4 className="text-sm font-semibold mb-2">
                   {item.title}
                 </h4>
-                <p className="text-xs text-gray-400 leading-relaxed">
+                <p className="text-xs text-gray-600 leading-relaxed">
                   {item.desc}
                 </p>
               </div>
@@ -170,13 +170,13 @@ export default function WhyChooseUs() {
       </section>
 
       {/* ================= RESPONSIBILITY ================= */}
-      <section className="py-24 bg-[#0b0b0b] border-t border-slate-800">
+      <section className="py-24 bg-gray-100 border-t border-gray-200">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-14">
           <div>
             <h3 className="text-xl font-bold mb-4">
               Health Is Not a Gamble
             </h3>
-            <p className="text-sm text-gray-400 leading-relaxed">
+            <p className="text-sm text-gray-600 leading-relaxed">
               Supplements directly affect health, recovery, and performance.
               That responsibility guides every decision we make.
             </p>
@@ -186,7 +186,7 @@ export default function WhyChooseUs() {
             <h3 className="text-xl font-bold mb-4">
               Education Before Consumption
             </h3>
-            <p className="text-sm text-gray-400 leading-relaxed">
+            <p className="text-sm text-gray-600 leading-relaxed">
               We promote informed usage through clear information, FAQs,
               and customer support.
             </p>
@@ -195,12 +195,12 @@ export default function WhyChooseUs() {
       </section>
 
       {/* ================= CTA ================= */}
-      <section className="py-24 border-t border-slate-800 bg-[#0b0b0b]">
+      <section className="py-24 border-t border-gray-200 bg-gray-100">
         <div className="max-w-5xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">
             Built on Standards, Not Shortcuts
           </h2>
-          <p className="text-gray-400 mb-10 text-sm max-w-xl mx-auto">
+          <p className="text-gray-600 mb-10 text-sm max-w-xl mx-auto">
             Choose supplements that respect your discipline and effort.
           </p>
           <Link

@@ -6,7 +6,6 @@ import Link from 'next/link';
 export default function ReviewsAndFAQsPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  /* ================= REVIEWS ================= */
   const reviews = [
     {
       name: "Anushka Verma",
@@ -52,7 +51,6 @@ export default function ReviewsAndFAQsPage() {
     },
   ];
 
-  /* ================= FAQS ================= */
   const faqs = [
     {
       category: 'Authenticity & Quality',
@@ -96,33 +94,30 @@ export default function ReviewsAndFAQsPage() {
   ];
 
   return (
-    <main className="bg-black text-gray-200">
+    <main className="bg-white text-gray-900">
 
       {/* ================= HERO ================= */}
       <section
-  className="relative border-b border-slate-800 py-28 bg-cover bg-center"
-  style={{ backgroundImage: "url('/reviews.png')" }}
->
-  {/* DARK OVERLAY */}
-  <div className="absolute inset-0 bg-black/70" />
+        className="relative border-b border-gray-200 py-28 bg-cover bg-center"
+        style={{ backgroundImage: "url('/reviews.png')" }}
+      >
+        <div className="absolute inset-0 bg-white/70" />
 
-  {/* CONTENT */}
-  <div className="relative max-w-5xl mx-auto px-4 text-center">
-    <h1 className="text-4xl font-bold mb-4">
-      Trusted by Athletes.{" "}
-      <span className="text-[#F2C200]">Backed by Proof.</span>
-    </h1>
+        <div className="relative max-w-5xl mx-auto px-4 text-center">
+          <h1 className="text-4xl font-bold mb-4">
+            Trusted by Athletes.{" "}
+            <span className="text-[#F2C200]">Backed by Proof.</span>
+          </h1>
 
-    <p className="text-gray-300 max-w-3xl mx-auto text-sm">
-      Real customer feedback and clear answers about authenticity,
-      ordering, and safety.
-    </p>
-  </div>
-</section>
-
+          <p className="text-gray-600 max-w-3xl mx-auto text-sm">
+            Real customer feedback and clear answers about authenticity,
+            ordering, and safety.
+          </p>
+        </div>
+      </section>
 
       {/* ================= STATS ================= */}
-      <section className="py-14 border-b border-slate-800">
+      <section className="py-14 border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
             ['100%', 'Satisfied Customers'],
@@ -132,7 +127,7 @@ export default function ReviewsAndFAQsPage() {
           ].map(([value, label]) => (
             <div key={label}>
               <p className="text-2xl font-bold">{value}</p>
-              <p className="text-xs text-gray-400">{label}</p>
+              <p className="text-xs text-gray-500">{label}</p>
             </div>
           ))}
         </div>
@@ -149,21 +144,21 @@ export default function ReviewsAndFAQsPage() {
             {reviews.map((item, index) => (
               <div
                 key={index}
-                className="bg-[#111] border border-slate-800 rounded-xl p-6 flex flex-col justify-between"
+                className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col justify-between"
               >
-                <p className="text-sm text-gray-300 mb-6 leading-relaxed">
+                <p className="text-sm text-gray-700 mb-6 leading-relaxed">
                   “{item.review}”
                 </p>
 
-                <div className="flex items-center gap-4 border-t border-slate-800 pt-4">
+                <div className="flex items-center gap-4 border-t border-gray-200 pt-4">
                   {item.image ? (
                     <img
                       src={item.image}
                       alt={item.name}
-                      className="w-10 h-10 rounded-full object-cover border border-slate-700"
+                      className="w-10 h-10 rounded-full object-cover border border-gray-300"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-xs font-semibold">
+                    <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-xs font-semibold">
                       {item.name.split(" ").map(n => n[0]).join("")}
                     </div>
                   )}
@@ -179,7 +174,7 @@ export default function ReviewsAndFAQsPage() {
       </section>
 
       {/* ================= FAQ ================= */}
-      <section className="py-20 bg-[#0b0b0b] border-t border-slate-800">
+      <section className="py-20 bg-gray-100 border-t border-gray-200">
         <div className="max-w-5xl mx-auto px-4 space-y-14">
           <h2 className="text-2xl font-bold">
             Frequently Asked Questions
@@ -199,13 +194,13 @@ export default function ReviewsAndFAQsPage() {
                   return (
                     <div
                       key={itemIndex}
-                      className="bg-[#111] border border-slate-800 rounded-lg overflow-hidden"
+                      className="bg-white border border-gray-200 rounded-lg overflow-hidden"
                     >
                       <button
                         onClick={() =>
                           setOpenIndex(isOpen ? null : globalIndex)
                         }
-                        className="w-full flex justify-between px-5 py-4 text-left hover:bg-[#161616]"
+                        className="w-full flex justify-between px-5 py-4 text-left hover:bg-gray-100"
                       >
                         <span className="text-sm font-medium">
                           {item.q}
@@ -220,7 +215,7 @@ export default function ReviewsAndFAQsPage() {
                           isOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
                         }`}
                       >
-                        <p className="px-5 pb-4 text-sm text-gray-400">
+                        <p className="px-5 pb-4 text-sm text-gray-600">
                           {item.a}
                         </p>
                       </div>
@@ -234,12 +229,12 @@ export default function ReviewsAndFAQsPage() {
       </section>
 
       {/* ================= CTA ================= */}
-      <section className="py-20 border-t border-slate-800">
+      <section className="py-20 border-t border-gray-200">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-4">
             Still Have Questions?
           </h2>
-          <p className="text-sm text-gray-400 mb-8">
+          <p className="text-sm text-gray-600 mb-8">
             Our team is here to help you make informed supplement choices.
           </p>
           <Link
