@@ -198,61 +198,76 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* ================= RECOMMENDED ================= */}
-      <div className="max-w-6xl mx-auto px-4 mt-24">
+{/* ================= RECOMMENDED ================= */}
+<div className="max-w-6xl mx-auto px-4 mt-24">
         <h2 className="text-2xl font-bold mb-10">You may also like</h2>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-12">
-          {recommended.map((item) => (
-            <Link
-              key={item._id}
-              href={`/shop/${item._id}`}
-              className="
-                block
-                bg-white
-                border border-gray-200
-                rounded-2xl
-                p-6
-                hover:border-[#F2C200]/60
-                transition
-                group
-              "
-            >
-              <div className="h-40 flex items-center justify-center mb-6">
-                <img
-                  src={item.heroImage}
-                  alt={item.name}
-                  className="
-                    h-full object-contain
-                    drop-shadow-[0_30px_45px_rgba(0,0,0,0.2)]
-                    group-hover:scale-105 transition
-                  "
-                />
-              </div>
+          {recommended.map((item) => {
+            const discountPercent =
+              item.originalPrice && item.originalPrice > item.price
+                ? Math.round(
+                    ((item.originalPrice - item.price) / item.originalPrice) * 100
+                  )
+                : null;
 
-              <div className="text-center">
-                <p className="text-xs text-gray-500 mb-1">
-                  {item.brand}
-                </p>
+            return (
+              <Link
+                key={item._id}
+                href={`/shop/${item._id}`}
+                className="
+                  relative block
+                  bg-white
+                  border border-gray-200
+                  rounded-2xl
+                  p-6
+                  hover:border-[#F2C200]/60
+                  transition
+                  group
+                "
+              >
+                {/* DISCOUNT BADGE */}
+                {discountPercent && (
+                  <div className="absolute top-3 left-3 z-20 bg-[#F2C200] text-black text-[10px] sm:text-xs font-bold px-2 py-1 rounded-md shadow-md leading-none">
+                    {discountPercent}% OFF
+                  </div>
+                )}
 
-                <h3 className="text-sm font-semibold mb-2">
-                  {item.name}
-                </h3>
-
-                <div className="flex items-center justify-center gap-2">
-                  {item.originalPrice && (
-                    <p className="text-xs text-red-500 line-through">
-                      ₹{item.originalPrice.toLocaleString("en-IN")}
-                    </p>
-                  )}
-
-                  <p className="text-sm font-bold text-[#F2C200]">
-                    ₹{item.price.toLocaleString("en-IN")}
-                  </p>
+                <div className="h-40 flex items-center justify-center mb-6">
+                  <img
+                    src={item.heroImage}
+                    alt={item.name}
+                    className="
+                      h-full object-contain
+                      drop-shadow-[0_30px_45px_rgba(0,0,0,0.2)]
+                      group-hover:scale-105 transition
+                    "
+                  />
                 </div>
-              </div>
-            </Link>
-          ))}
+
+                <div className="text-center">
+                  <p className="text-xs text-gray-500 mb-1">
+                    {item.brand}
+                  </p>
+
+                  <h3 className="text-sm font-semibold mb-2">
+                    {item.name}
+                  </h3>
+
+                  <div className="flex items-center justify-center gap-2">
+                    {item.originalPrice && (
+                      <p className="text-xs text-red-500 line-through">
+                        ₹{item.originalPrice.toLocaleString("en-IN")}
+                      </p>
+                    )}
+                    <p className="text-sm font-bold text-[#F2C200]">
+                      ₹{item.price.toLocaleString("en-IN")}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </main>
