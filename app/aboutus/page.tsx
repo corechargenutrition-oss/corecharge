@@ -1,5 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "About Us | CoreCharge Nutrition",
+  description:
+    "Learn how CoreCharge ensures authentic supplements with verified sourcing and trusted brands.",
+};
 export default function AboutUs() {
   return (
     <main className="bg-white text-gray-900">
@@ -191,3 +197,5 @@ export default function AboutUs() {
     </main>
   );
 }
+
+
