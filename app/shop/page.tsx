@@ -5,17 +5,55 @@ import { useEffect, useMemo, useState } from "react";
 
 /* ================= TYPES ================= */
 
+type FlavourEntry = {
+  _id: string;
+  price: number;
+  originalPrice?: number;
+};
+
+type WeightVariant = {
+  _id: string;
+  weight: string;
+  flavours: FlavourEntry[];
+};
+
 type Product = {
   _id: string;
   name: string;
   brand: string;
   price: number;
   originalPrice?: number;
-
   category: string;
   heroImage: string;
   inStock: boolean;
+  variantType: "none" | "flavour-only" | "weight-flavour";
+  variants: WeightVariant[];
 };
+
+/* ── helpers to resolve display price from a product ── */
+function resolvePrice(product: Product): number {
+  if (
+    product.variantType &&
+    product.variantType !== "none" &&
+    Array.isArray(product.variants) &&
+    product.variants[0]?.flavours?.[0]
+  ) {
+    return product.variants[0].flavours[0].price;
+  }
+  return product.price ?? 0;
+}
+
+function resolveOriginalPrice(product: Product): number | undefined {
+  if (
+    product.variantType &&
+    product.variantType !== "none" &&
+    Array.isArray(product.variants) &&
+    product.variants[0]?.flavours?.[0]
+  ) {
+    return product.variants[0].flavours[0].originalPrice;
+  }
+  return product.originalPrice;
+}
 
 /* ================= PAGE ================= */
 
@@ -45,16 +83,17 @@ export default function ShopPage() {
 
     if (priceRange) {
       list = list.filter((p) => {
-        if (priceRange === "under-1000") return p.price < 1000;
-        if (priceRange === "1000-3000") return p.price >= 1000 && p.price <= 3000;
-        if (priceRange === "3000-6000") return p.price > 3000 && p.price <= 6000;
-        if (priceRange === "above-6000") return p.price > 6000;
+        const price = resolvePrice(p);
+        if (priceRange === "under-1000") return price < 1000;
+        if (priceRange === "1000-3000") return price >= 1000 && price <= 3000;
+        if (priceRange === "3000-6000") return price > 3000 && price <= 6000;
+        if (priceRange === "above-6000") return price > 6000;
         return true;
       });
     }
 
-    if (sort === "low-high") list.sort((a, b) => a.price - b.price);
-    if (sort === "high-low") list.sort((a, b) => b.price - a.price);
+    if (sort === "low-high") list.sort((a, b) => resolvePrice(a) - resolvePrice(b));
+    if (sort === "high-low") list.sort((a, b) => resolvePrice(b) - resolvePrice(a));
     if (sort === "newest") list.sort((a, b) => (a._id < b._id ? 1 : -1));
 
     return list;
@@ -101,25 +140,14 @@ export default function ShopPage() {
               </FilterBlock>
 
               <FilterBlock title="Price Range">
-                <FilterItem onClick={() => setPriceRange("under-1000")}>
-                  Under ₹1,000
-                </FilterItem>
-                <FilterItem onClick={() => setPriceRange("1000-3000")}>
-                  ₹1,000 – ₹3,000
-                </FilterItem>
-                <FilterItem onClick={() => setPriceRange("3000-6000")}>
-                  ₹3,000 – ₹6,000
-                </FilterItem>
-                <FilterItem onClick={() => setPriceRange("above-6000")}>
-                  Above ₹6,000
-                </FilterItem>
+                <FilterItem onClick={() => setPriceRange("under-1000")}>Under ₹1,000</FilterItem>
+                <FilterItem onClick={() => setPriceRange("1000-3000")}>₹1,000 – ₹3,000</FilterItem>
+                <FilterItem onClick={() => setPriceRange("3000-6000")}>₹3,000 – ₹6,000</FilterItem>
+                <FilterItem onClick={() => setPriceRange("above-6000")}>Above ₹6,000</FilterItem>
               </FilterBlock>
 
               <button
-                onClick={() => {
-                  setCategory(null);
-                  setPriceRange(null);
-                }}
+                onClick={() => { setCategory(null); setPriceRange(null); }}
                 className="text-xs text-gray-500 hover:text-gray-900"
               >
                 Clear all filters
@@ -136,7 +164,6 @@ export default function ShopPage() {
               <p className="text-sm text-gray-500">
                 Showing {filteredProducts.length} products
               </p>
-
               <select
                 onChange={(e) => setSort(e.target.value)}
                 className="bg-white border border-gray-300 rounded-md px-3 py-2 text-sm"
@@ -148,16 +175,25 @@ export default function ShopPage() {
               </select>
             </div>
 
-         {/* GRID */}
-         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-12">
+            {/* GRID */}
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-12">
               {filteredProducts.map((product) => {
+                const displayPrice = resolvePrice(product);
+                const displayOriginal = resolveOriginalPrice(product);
                 const discountPercent =
-                  product.originalPrice && product.originalPrice > product.price
+                  displayOriginal && displayOriginal > displayPrice
                     ? Math.round(
-                        ((product.originalPrice - product.price) /
-                          product.originalPrice) *
-                          100
+                        ((displayOriginal - displayPrice) / displayOriginal) * 100
                       )
+                    : null;
+
+                /* Badge to show variant count hint */
+                const variantHint =
+                  product.variantType === "weight-flavour" && product.variants.length > 1
+                    ? `${product.variants.length} sizes`
+                    : product.variantType === "flavour-only" &&
+                      product.variants[0]?.flavours.length > 1
+                    ? `${product.variants[0].flavours.length} flavours`
                     : null;
 
                 return (
@@ -185,6 +221,13 @@ export default function ShopPage() {
                       </div>
                     )}
 
+                    {/* VARIANT HINT BADGE */}
+                    {variantHint && (
+                      <div className="absolute top-3 right-3 z-20 bg-gray-100 text-gray-600 text-[10px] sm:text-xs font-medium px-2 py-1 rounded-md leading-none">
+                        {variantHint}
+                      </div>
+                    )}
+
                     {/* IMAGE */}
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-44 h-44 flex items-center justify-center">
                       <div className="absolute inset-0 bg-[#F2C200]/20 blur-3xl rounded-full opacity-70" />
@@ -203,37 +246,24 @@ export default function ShopPage() {
 
                     {/* TEXT */}
                     <div className="relative mt-14 z-10 text-center">
-                      <p className="text-xs text-gray-500 mb-1">
-                        {product.brand}
-                      </p>
-
-                      <h3 className="text-sm font-semibold mb-2">
-                        {product.name}
-                      </h3>
-
-                      <p className="text-xs text-gray-500 mb-4">
-                        Category: {product.category}
-                      </p>
+                      <p className="text-xs text-gray-500 mb-1">{product.brand}</p>
+                      <h3 className="text-sm font-semibold mb-2">{product.name}</h3>
+                      <p className="text-xs text-gray-500 mb-4">Category: {product.category}</p>
 
                       <div className="flex flex-col items-center gap-2">
-
-                        {/* PRICE ROW */}
                         <div className="flex items-center gap-2">
-                          {product.originalPrice && (
+                          {displayOriginal && (
                             <p className="text-xs text-red-500 line-through">
-                              ₹{product.originalPrice.toLocaleString("en-IN")}
+                              ₹{displayOriginal.toLocaleString("en-IN")}
                             </p>
                           )}
                           <p className="text-sm font-bold">
-                            ₹{product.price.toLocaleString("en-IN")}
+                            {variantHint ? "From " : ""}₹{displayPrice.toLocaleString("en-IN")}
                           </p>
                         </div>
-
-                        {/* VIEW */}
                         <div className="text-xs font-semibold text-[#F2C200] group-hover:text-[#ffd700]">
                           View →
                         </div>
-
                       </div>
                     </div>
                   </Link>
@@ -250,13 +280,7 @@ export default function ShopPage() {
 
 /* ================= UI HELPERS ================= */
 
-function FilterBlock({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function FilterBlock({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
       <h3 className="text-sm font-semibold mb-4">{title}</h3>
@@ -266,20 +290,14 @@ function FilterBlock({
 }
 
 function FilterItem({
-  children,
-  active,
-  onClick,
+  children, active, onClick,
 }: {
-  children: React.ReactNode;
-  active?: boolean;
-  onClick?: () => void;
+  children: React.ReactNode; active?: boolean; onClick?: () => void;
 }) {
   return (
     <li
       onClick={onClick}
-      className={`cursor-pointer hover:text-gray-900 ${
-        active ? "text-[#F2C200]" : ""
-      }`}
+      className={`cursor-pointer hover:text-gray-900 ${active ? "text-[#F2C200]" : ""}`}
     >
       {children}
     </li>
