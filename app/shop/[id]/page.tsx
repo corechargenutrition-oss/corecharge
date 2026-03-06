@@ -194,7 +194,7 @@ export default function ProductPage() {
                 ₹{displayOriginalPrice.toLocaleString("en-IN")}
               </p>
             )}
-            <p className="text-2xl font-bold text-[#F2C200]">
+            <p className="text-2xl font-bold text-black">
               ₹{displayPrice.toLocaleString("en-IN")}
             </p>
           </div>
@@ -231,7 +231,7 @@ export default function ProductPage() {
                       <p className="text-sm font-bold">{wv.weight}</p>
                       {lowestFl && (
                         <>
-                          <p className="text-sm font-semibold text-[#F2C200]">
+                          <p className="text-sm font-semibold text-black">
                             ₹{lowestFl.price.toLocaleString("en-IN")}
                           </p>
                           {lowestFl.originalPrice && (
@@ -273,7 +273,7 @@ export default function ProductPage() {
                       }`}
                     >
                       <p className="text-sm font-bold">{fl.name}</p>
-                      <p className="text-sm font-semibold text-[#F2C200]">
+                      <p className="text-sm font-semibold text-black">
                         ₹{fl.price.toLocaleString("en-IN")}
                       </p>
                       {fl.originalPrice && (
